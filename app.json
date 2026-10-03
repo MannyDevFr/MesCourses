@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "MesCourses+",
+    "slug": "mescourses",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.mannydevfr.mescourses",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-localization",
+      "expo-font",
+      "./plugins/withAndroidToolchain.cjs"
+    ],
+    "scheme": "mescourses"
+  }
+}
