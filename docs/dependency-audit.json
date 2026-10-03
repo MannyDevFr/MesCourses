@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-04",
+  "counts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 10,
+    "high": 50,
+    "critical": 0,
+    "total": 60
+  },
+  "direct": [
+    {
+      "name": "@types/jest",
+      "severity": "high",
+      "fix": {
+        "name": "@types/jest",
+        "version": "30.0.0",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "expo",
+      "severity": "high",
+      "fix": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "expo-router",
+      "severity": "moderate",
+      "fix": {
+        "name": "expo-router",
+        "version": "58.0.13",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "jest",
+      "severity": "high",
+      "fix": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "jest-expo",
+      "severity": "high",
+      "fix": {
+        "name": "jest-expo",
+        "version": "58.0.7",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "react-native",
+      "severity": "high",
+      "fix": {
+        "name": "react-native",
+        "version": "0.84.1",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "react-native-reanimated",
+      "severity": "high",
+      "fix": {
+        "name": "react-native-reanimated",
+        "version": "4.3.4",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "react-native-worklets",
+      "severity": "high",
+      "fix": {
+        "name": "react-native-worklets",
+        "version": "0.7.4",
+        "isSemVerMajor": true
+      }
+    }
+  ]
+}
