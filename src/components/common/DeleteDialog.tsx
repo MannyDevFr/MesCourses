@@ -9,8 +9,10 @@ export function DeleteDialog({
   busy,
   onConfirm,
   onClose,
+  name,
 }: {
   kind: 'list' | 'product';
+  name?: string;
   busy: boolean;
   onConfirm: (skip: boolean) => Promise<boolean>;
   onClose: () => void;
@@ -26,15 +28,27 @@ export function DeleteDialog({
     >
       <Text
         style={{
-          fontSize: 22,
+          fontSize: 20,
           fontFamily: 'OpenSans-Semibold',
           color: colors.primary,
         }}
       >
         {t.remove}
       </Text>
+      {!!name && (
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 18,
+            marginTop: 12,
+            fontFamily: 'OpenSans-Semibold',
+          }}
+        >
+          {name}
+        </Text>
+      )}
       <Text
-        style={{ fontSize: 16, color: colors.secondary, marginVertical: 16 }}
+        style={{ fontSize: 16, color: colors.secondary, marginVertical: 12 }}
       >
         {kind === 'list' ? t.deleteList : t.deleteProduct}
       </Text>

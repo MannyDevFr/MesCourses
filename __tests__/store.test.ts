@@ -43,11 +43,22 @@ test('complete offline shopping flow uses repositories, migrates once and restor
   const store = () => useShoppingListStore.getState();
   await store().initialize();
   expect(store().ready).toBe(true);
+  expect(store().generalCatalog).toHaveLength(760);
+  expect(store().generalCategories).toHaveLength(40);
   expect(store().language).toBe('es');
   const list = await store().createList('  Market  ');
   expect(list?.name).toBe('Market');
+  expect(store().personalCategories[0]).toMatchObject({
+    name: 'Market',
+    useCount: 1,
+  });
   expect(await store().addProduct('  Milk  ')).toBe(true);
   expect(await store().addProduct('Bread')).toBe(true);
+  expect(
+    store()
+      .personalCatalog.map((p) => p.name)
+      .sort(),
+  ).toEqual(['Bread', 'Milk']);
   const milk = store().products.find((p) => p.name === 'Milk')!;
   await store().changeQuantity(milk.id, -1);
   expect(store().products[0].quantity).toBe(1);
@@ -70,6 +81,7 @@ test('complete offline shopping flow uses repositories, migrates once and restor
   await store().initialize();
   expect(store().language).toBe('fr');
   expect(store().skipProductDelete).toBe(true);
+  expect(store().personalCatalog).toHaveLength(2);
   await store().openList(list!.id);
   expect(store().products).toHaveLength(2);
   expect(await store().addProduct('   ')).toBe(false);
@@ -80,6 +92,6 @@ test('complete offline shopping flow uses repositories, migrates once and restor
   expect(await ProductRepository.all(list!.id)).toHaveLength(0);
   const db = await database();
   expect(await db.getFirstAsync('PRAGMA user_version')).toEqual({
-    user_version: 1,
+    user_version: 4,
   });
 });

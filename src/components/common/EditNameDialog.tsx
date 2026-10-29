@@ -39,17 +39,18 @@ export function EditNameDialog({
     >
       <Text
         style={{
-          fontSize: 22,
+          fontSize: 20,
           fontFamily: 'OpenSans-Semibold',
           color: colors.primary,
         }}
       >
         {t.edit}
       </Text>
-      <Text style={{ marginTop: 16, color: colors.secondary }}>{t.name}</Text>
+      <Text style={{ marginTop: 12, color: colors.secondary }}>{t.name}</Text>
       <TextInput
         accessibilityLabel={t.name}
         autoFocus
+        selectTextOnFocus
         editable={!busy}
         value={value}
         onChangeText={setValue}
@@ -57,12 +58,14 @@ export function EditNameDialog({
         onSubmitEditing={() => void save()}
         returnKeyType="done"
         style={{
-          padding: 12,
+          paddingHorizontal: 10,
+          paddingVertical: 4,
+          minHeight: 36,
           borderWidth: 1,
           borderColor: colors.border,
           borderRadius: 8,
-          marginVertical: 12,
-          fontSize: 16,
+          marginVertical: 8,
+          fontSize: 15,
           color: colors.text,
         }}
       />

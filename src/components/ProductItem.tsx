@@ -1,5 +1,4 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import type { Product } from '../models/Product';
 import { colors } from '../constants/colors';
 import { IconButton } from './common/IconButton';
@@ -22,34 +21,44 @@ export function ProductItem({
 }) {
   const t = useTranslations();
   return (
-    <View style={styles.card}>
+    <View
+      style={[
+        styles.card,
+        product.isChecked && { backgroundColor: colors.successSoft },
+      ]}
+    >
       <View style={styles.row}>
-        <Pressable
-          accessibilityRole="checkbox"
-          accessibilityLabel={product.name}
-          accessibilityState={{ checked: product.isChecked, disabled: busy }}
-          disabled={busy}
-          onPress={onToggle}
-          style={({ pressed }) => ({
-            width: 48,
-            minHeight: 48,
-            alignItems: 'center',
-            justifyContent: 'center',
-            opacity: pressed ? 0.6 : 1,
-          })}
-        >
-          <Ionicons
-            name={product.isChecked ? 'checkbox' : 'square-outline'}
-            size={24}
-            color={colors.primary}
-          />
-        </Pressable>
         <EditableName
+          singleLine
           name={product.name}
           checked={product.isChecked}
           disabled={busy}
           onEdit={onEdit}
+          onPress={onToggle}
         />
+        <IconButton
+          icon="remove"
+          label={`${t.decrease}: ${product.name}`}
+          disabled={busy || product.quantity <= 1}
+          onPress={() => onQuantity(-1)}
+        />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${t.increase}: ${product.name}`}
+          accessibilityValue={{ now: product.quantity, min: 1 }}
+          accessibilityState={{ disabled: busy }}
+          disabled={busy}
+          onPress={() => onQuantity(1)}
+          hitSlop={{ top: 4, bottom: 4 }}
+          style={({ pressed }) => [
+            styles.quantity,
+            { opacity: busy ? 0.4 : pressed ? 0.6 : 1 },
+          ]}
+        >
+          <Text numberOfLines={1} style={styles.count}>
+            ×{product.quantity}
+          </Text>
+        </Pressable>
         <IconButton
           icon="trash-outline"
           label={`${t.remove}: ${product.name}`}
@@ -58,39 +67,28 @@ export function ProductItem({
           onPress={onDelete}
         />
       </View>
-      <View style={styles.quantity}>
-        <IconButton
-          icon="remove"
-          label={`${t.decrease}: ${product.name}`}
-          disabled={busy || product.quantity <= 1}
-          onPress={() => onQuantity(-1)}
-        />
-        <Text accessibilityLabel={`${product.quantity}`} style={styles.count}>
-          x{product.quantity}
-        </Text>
-        <IconButton
-          icon="add"
-          label={`${t.increase}: ${product.name}`}
-          disabled={busy}
-          onPress={() => onQuantity(1)}
-        />
-      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
     marginBottom: 8,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 0,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   quantity: {
-    flexDirection: 'row',
+    minWidth: 40,
+    minHeight: 36,
+    paddingHorizontal: 4,
+    borderRadius: 8,
+    backgroundColor: colors.primarySoft,
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   count: {
     color: colors.secondary,

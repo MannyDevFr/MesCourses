@@ -11,7 +11,7 @@ Primera base funcional, compilada y probada en un emulador Android. Preparada pa
 ### Funciones disponibles
 
 - Crear, abrir, renombrar y eliminar listas de compras.
-- Añadir productos mediante texto o sugerencias traducidas.
+- Añadir productos mediante texto o un selector con sugerencias por rubro.
 - Cambiar cantidades, con un mínimo de una unidad.
 - Marcar productos como comprados: se tachan y pasan al final.
 - Editar nombres con doble toque o pulsación prolongada.
@@ -37,6 +37,10 @@ Primera base funcional, compilada y probada en un emulador Android. Preparada pa
 | Pruebas       | Jest, React Native Testing Library y SQLite real de Node |
 
 SQLite es la fuente de verdad. Los repositorios contienen el SQL; las acciones del store coordinan las operaciones y actualizan la interfaz después de guardar.
+
+El [catálogo de Francia y las sugerencias personales](docs/CATALOG.md) se guardan
+en SQLite: 40 rubros y 760 productos generales, con historiales personales
+que priorizan los artículos elegidos. Ambos funcionan offline y persisten al reiniciar.
 
 ## Requisitos
 

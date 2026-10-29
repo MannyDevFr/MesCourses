@@ -1,6 +1,8 @@
 import { database } from '../database/database';
 import type { Product } from '../models/Product';
 import { validName } from '../utils/validation';
+import { normalizeProduct } from '../utils/catalog';
+import type { Category } from '../models/Catalog';
 type ProductRow = Omit<Product, 'isChecked'> & { isChecked: number };
 export const ProductRepository = {
   async all(listId: number): Promise<Product[]> {
@@ -13,14 +15,31 @@ export const ProductRepository = {
     return rows.map((row) => ({ ...row, isChecked: !!row.isChecked }));
   },
   async create(listId: number, value: string) {
+    const name = validName(value, 300);
     await (
       await database()
-    ).runAsync(
-      'INSERT INTO products(listId,name,sortOrder) VALUES (?,?,(SELECT COALESCE(MAX(sortOrder),0)+1 FROM products WHERE listId=?))',
-      listId,
-      validName(value, 300),
-      listId,
-    );
+    ).withExclusiveTransactionAsync(async (tx) => {
+      const list = await tx.getFirstAsync<{ category: Category }>(
+        'SELECT category FROM shopping_lists WHERE id=?',
+        listId,
+      );
+      if (!list) throw new Error('List not found');
+      await tx.runAsync(
+        'INSERT INTO products(listId,name,sortOrder) VALUES (?,?,(SELECT COALESCE(MAX(sortOrder),0)+1 FROM products WHERE listId=?))',
+        listId,
+        name,
+        listId,
+      );
+      await tx.runAsync(
+        `INSERT INTO personal_product_cache(category,normalizedName,name,useCount,lastUsedAt)
+        VALUES (?,?,?,1,?) ON CONFLICT(category,normalizedName) DO UPDATE SET
+        name=excluded.name,useCount=useCount+1,lastUsedAt=excluded.lastUsedAt`,
+        list.category,
+        normalizeProduct(name),
+        name,
+        new Date().toISOString(),
+      );
+    });
   },
   async rename(id: number, value: string) {
     await (

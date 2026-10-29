@@ -5,10 +5,23 @@ import type { Product } from '../models/Product';
 import { ShoppingListRepository as lists } from '../repositories/ShoppingListRepository';
 import { ProductRepository as products } from '../repositories/ProductRepository';
 import { SettingsRepository as settings } from '../repositories/SettingsRepository';
+import { CatalogRepository as catalog } from '../repositories/CatalogRepository';
+import { CategoryRepository as categoryCatalog } from '../repositories/CategoryRepository';
+import type {
+  CatalogProduct,
+  PersonalProduct,
+  Category,
+  CatalogCategory,
+  PersonalCategory,
+} from '../models/Catalog';
 export type Language = 'en' | 'es' | 'fr';
 interface State {
   lists: ShoppingList[];
   products: Product[];
+  generalCatalog: CatalogProduct[];
+  personalCatalog: PersonalProduct[];
+  generalCategories: CatalogCategory[];
+  personalCategories: PersonalCategory[];
   activeListId: number | null;
   ready: boolean;
   busy: boolean;
@@ -21,6 +34,8 @@ interface State {
   openList: (id: number) => Promise<boolean>;
   createList: (name: string) => Promise<ShoppingList | undefined>;
   renameList: (id: number, name: string) => Promise<boolean>;
+  setListCategory: (id: number, category: Category) => Promise<boolean>;
+  setListCategoryByName: (id: number, name: string) => Promise<boolean>;
   deleteList: (id: number) => Promise<boolean>;
   addProduct: (name: string) => Promise<boolean>;
   renameProduct: (id: number, name: string) => Promise<boolean>;
@@ -54,6 +69,10 @@ export const useShoppingListStore = create<State>((set, get) => {
   return {
     lists: [],
     products: [],
+    generalCatalog: [],
+    personalCatalog: [],
+    generalCategories: [],
+    personalCategories: [],
     activeListId: null,
     ready: false,
     busy: false,
@@ -70,6 +89,10 @@ export const useShoppingListStore = create<State>((set, get) => {
         const language = preferences.language;
         set({
           lists: await lists.all(),
+          generalCatalog: await catalog.general(),
+          personalCatalog: await catalog.personal(),
+          generalCategories: await categoryCatalog.general(),
+          personalCategories: await categoryCatalog.personal(),
           ready: true,
           ...(language === 'en' || language === 'es' || language === 'fr'
             ? { language }
@@ -97,6 +120,7 @@ export const useShoppingListStore = create<State>((set, get) => {
         set({
           lists: await lists.all(),
           activeListId: created.id,
+          personalCategories: await categoryCatalog.personal(),
           products: [],
         });
       });
@@ -106,6 +130,22 @@ export const useShoppingListStore = create<State>((set, get) => {
       run(async () => {
         await lists.rename(id, name);
         set({ lists: await lists.all() });
+      }),
+    setListCategory: (id, category) =>
+      run(async () => {
+        await lists.setCategory(id, category);
+        set({
+          lists: await lists.all(),
+          personalCategories: await categoryCatalog.personal(),
+        });
+      }),
+    setListCategoryByName: (id, name) =>
+      run(async () => {
+        await lists.setCategoryByName(id, name);
+        set({
+          lists: await lists.all(),
+          personalCategories: await categoryCatalog.personal(),
+        });
       }),
     deleteList: (id) =>
       run(async () => {
@@ -122,6 +162,7 @@ export const useShoppingListStore = create<State>((set, get) => {
         const id = get().activeListId;
         if (id === null) throw new Error('No active list');
         await products.create(id, name);
+        set({ personalCatalog: await catalog.personal() });
         await reloadProducts();
       }),
     renameProduct: (id, name) =>

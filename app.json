@@ -21,7 +21,16 @@
       "expo-sqlite",
       "expo-localization",
       "expo-font",
-      "./plugins/withAndroidToolchain.cjs"
+      "./plugins/withAndroidToolchain.cjs",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#1B3B5F",
+          "image": "./assets/splash-mark.png",
+          "imageWidth": 128,
+          "resizeMode": "contain"
+        }
+      ]
     ],
     "scheme": "mescourses"
   }

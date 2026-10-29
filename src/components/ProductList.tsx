@@ -7,7 +7,11 @@ import { colors } from '../constants/colors';
 export function ProductList({
   onEdit,
   onDelete,
+  header,
+  visibleProducts,
 }: {
+  header?: React.ReactElement;
+  visibleProducts?: Product[];
   onEdit: (product: Product) => void;
   onDelete: (id: number) => void;
 }) {
@@ -16,17 +20,19 @@ export function ProductList({
     t = useTranslations();
   return (
     <FlatList
-      data={products}
+      data={visibleProducts ?? products}
+      ListHeaderComponent={header}
+      keyboardDismissMode="on-drag"
       keyExtractor={(item) => String(item.id)}
       keyboardShouldPersistTaps="handled"
       refreshing={busy}
       onRefresh={() => void useShoppingListStore.getState().refresh()}
-      contentContainerStyle={{ paddingBottom: 32 }}
+      contentContainerStyle={{ paddingBottom: 32, flexGrow: 1 }}
       ListEmptyComponent={
         <Text
           style={{ color: colors.secondary, padding: 24, textAlign: 'center' }}
         >
-          {t.noProducts}
+          {products.length ? t.noResults : `${t.noProducts}\n\n${t.emptyHint}`}
         </Text>
       }
       renderItem={({ item }) => (

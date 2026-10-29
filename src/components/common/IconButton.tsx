@@ -21,15 +21,16 @@ export function IconButton({
       accessibilityState={{ disabled: !!disabled }}
       disabled={disabled}
       onPress={onPress}
+      hitSlop={{ top: 4, bottom: 4 }}
       style={({ pressed }) => ({
-        minWidth: 48,
-        minHeight: 48,
+        minWidth: 40,
+        minHeight: 36,
         alignItems: 'center',
         justifyContent: 'center',
         opacity: disabled ? 0.4 : pressed ? 0.6 : 1,
       })}
     >
-      <Ionicons name={icon} size={22} color={color} />
+      <Ionicons name={icon} size={18} color={color} />
     </Pressable>
   );
 }

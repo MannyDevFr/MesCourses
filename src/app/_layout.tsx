@@ -18,7 +18,7 @@ export default function Layout() {
         <Stack.Screen
           name="index"
           options={{
-            title: t.lists,
+            title: 'MesCourses+',
             headerRight: () => (
               <IconButton
                 icon="settings-outline"

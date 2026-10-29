@@ -8,12 +8,14 @@ export function EditableName({
   onEdit,
   onPress,
   disabled,
+  singleLine,
 }: {
   name: string;
   checked?: boolean;
   onEdit: () => void;
   onPress?: () => void;
   disabled?: boolean;
+  singleLine?: boolean;
 }) {
   const last = useRef(0),
     t = useTranslations();
@@ -36,28 +38,31 @@ export function EditableName({
   }
   return (
     <Pressable
-      accessibilityRole="button"
+      accessibilityRole={checked === undefined ? 'button' : 'checkbox'}
       accessibilityLabel={name}
-      accessibilityHint={t.hint}
+      accessibilityHint={onPress ? t.hint : t.edit}
+      accessibilityState={{ disabled: !!disabled, checked }}
       accessibilityActions={[{ name: 'edit', label: t.edit }]}
       onAccessibilityAction={(e) => {
         if (e.nativeEvent.actionName === 'edit') edit();
       }}
       disabled={disabled}
-      onPress={press}
+      onPress={onPress ? press : edit}
       onLongPress={edit}
       style={({ pressed }) => ({
         flex: 1,
-        minHeight: 48,
+        minWidth: 0,
+        minHeight: 36,
         justifyContent: 'center',
         opacity: pressed ? 0.7 : 1,
       })}
     >
       <Text
+        numberOfLines={singleLine ? 1 : undefined}
         style={{
           fontFamily: 'OpenSans-Regular',
-          fontSize: 16,
-          color: checked ? colors.muted : colors.text,
+          fontSize: 15,
+          color: checked ? colors.secondary : colors.text,
           textDecorationLine: checked ? 'line-through' : 'none',
         }}
       >
